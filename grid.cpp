@@ -5,52 +5,27 @@
 #include <cstdlib>
 #include <ctime>
 
-Grid::Grid(const int rows, const int cols, const int tileSize)
-        : m_rows(rows), m_cols(cols), m_tileSize(tileSize)
+Grid::Grid(const int cols, const int rows, const int tileSize)
+        : m_cols(cols), m_rows(rows), m_tileSize(tileSize)
 {
-    for(int row=0 ; row<rows ; ++row)
-        for(int col=0 ; col<cols; ++col)
-            m_tiles.push_back(Tile(row*tileSize, col*tileSize, tileSize, tileSize, 10.f));
+    for(int col=0 ; col<cols ; col++)
+        for(int row=0 ; row<rows; row++)
+            m_tiles.push_back(Tile(col*tileSize, row*tileSize, tileSize, tileSize, 10.f));
             srand(time(NULL));
 }
 void Grid::draw(sf::RenderWindow& window)
 {
-    for(int row=0 ; row<m_rows ; ++row)
-        for(int col=0 ; col<m_cols; ++col)
-            setTile(row, col).drawTile(window);
+    for(int col=0 ; col<m_cols ; col++)
+        for(int row=0 ; row<m_rows; row++)
+            setTile(col, row).drawTile(window);
 }
-const Tile& Grid::getTile(const int row, const int col) const
+const Tile& Grid::getTile(const int col, const int row) const
 {
-    return m_tiles[m_cols*row + col];
+    return m_tiles[m_rows*col + row];
 }
-Tile& Grid::setTile(const int row, const int col)
+Tile& Grid::setTile(const int col, const int row)
 {
-    return m_tiles[m_cols*row + col];
-}
-void Grid::print() const
-{
-    for(int row=0 ; row<m_rows ; row++)
-    {
-        this->printRow(row);
-        std::cout << '\n';
-    }
-    std::cout << '\n';
-}
-void Grid::printRow(const int row) const
-{
-    if(row < m_rows)
-    {
-        for(int col=0 ; col< m_cols ; col++)
-            std::cout << this->getTile(row, col).getValue() << ' ';
-    }
-}
-void Grid::printCol(const int col) const
-{
-    if(col < m_cols)
-    {
-        for(int row=0 ; row<m_rows ; ++row)
-            std::cout << this->getTile(row, col).getValue() << '\n';
-    }
+    return m_tiles[m_rows*col + row];
 }
 void Grid::spawnTile()
 {
@@ -74,14 +49,14 @@ void Grid::slideUP()
     {
         for(int row=0 ; row<m_rows ; row++)
         {
-            if(getTile(row, col).getValue() && row)
+            if(getTile(col, row).getValue() && col)
             {
-                if(getTile(row - 1, col).getValue() == 0)
+                if(getTile(col - 1, row).getValue() == 0)
                 {
-                    newValue = getTile(row, col).getValue();
-                    setTile(row -1, col).setValue(newValue);
-                    setTile(row, col).setValue(0);
-                    row -= 2;
+                    newValue = getTile(col, row).getValue();
+                    setTile(col -1, row).setValue(newValue);
+                    setTile(col, row).setValue(0);
+                    col -= 2;
                 }
             }
         }
@@ -103,23 +78,23 @@ void Grid::rotateGrid(int revolutions)
     while(revolutions)
     {
         //flip diagonally
-        for(int row=0 ; row<m_rows-1 ; row++)
+        for(int col=0 ; col<m_cols-1 ; col++)
         {
-            for(int col=row+1 ; col<m_cols ; col++)
+            for(int row=col+1 ; row<m_rows ; row++)
             {
-                temp = getTile(row, col).getValue();
-                setTile(row, col).setValue(getTile(col, row).getValue());
-                setTile(col, row).setValue(temp);
+                temp = getTile(col, row).getValue();
+                setTile(col, row).setValue(getTile(row, col).getValue());
+                setTile(row, col).setValue(temp);
             }
         }
         //flip vertically
-        for(int row=0 ; row<m_rows/2 ; row++)
+        for(int col=0 ; col<m_cols/2 ; col++)
         {
-            for(int col=0 ; col<m_cols ; col++)
+            for(int row=0 ; row<m_rows ; row++)
             {
-                temp = getTile(row, col).getValue();
-                setTile(row, col).setValue(getTile(m_rows - 1 - row, col).getValue());
-                setTile(m_rows - 1 - row, col).setValue(temp);
+                temp = getTile(col, row).getValue();
+                setTile(col, row).setValue(getTile(m_cols - 1 - col, row).getValue());
+                setTile(m_cols - 1 - col, row).setValue(temp);
             }
         }
         revolutions--;
@@ -128,14 +103,14 @@ void Grid::rotateGrid(int revolutions)
 
 void Grid::combineUP()
 {
-    for(int row=0 ; row<m_rows-1 ; row++)
+    for(int col=0 ; col<m_cols-1 ; col++)
     {
-        for(int col=0 ; col<m_cols ; col++)
+        for(int row=0 ; row<m_rows ; row++)
         {
-            if(getTile(row, col).getValue() && getTile(row, col).getValue() == getTile(row + 1, col).getValue())
+            if(getTile(col, row).getValue() && getTile(col, row).getValue() == getTile(col + 1, row).getValue())
             {
-                setTile(row, col).setValue(getTile(row, col).getValue() * 2);
-                setTile(row + 1, col).setValue(0);
+                setTile(col, row).setValue(getTile(col, row).getValue() * 2);
+                setTile(col + 1, row).setValue(0);
             }
         }
     }

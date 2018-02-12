@@ -8,7 +8,7 @@ sf::Font Tile::s_font;
 Tile::Tile(const int x, const int y, const int width, const int height, const double borderThickness)
     : m_x(x + borderThickness/2), m_y(y + borderThickness/2), m_width(width - borderThickness), m_height(height - borderThickness), m_borderThickness(borderThickness), m_tile(sf::Vector2f(m_height, m_width)), m_value(0)
 {
-    m_tile.setPosition(m_y, m_x);
+    m_tile.setPosition(m_x, m_y);
     m_tile.setOutlineColor(sf::Color(60, 60, 60));
     m_tile.setOutlineThickness(m_borderThickness);
 

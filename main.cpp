@@ -5,8 +5,8 @@
 
 int main()
 {
-    const int rows = 4;
     const int cols = 4;
+    const int rows = 4;
     const int tileSize = 100;
 
     Tile::loadFont("resources/sansation.ttf");
@@ -14,7 +14,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(rows*tileSize, cols*tileSize), "2048", sf::Style::Titlebar | sf::Style::Close);
     sf::Color backgroundColor(125, 125, 125);
 
-    Grid gameGrid(rows, cols, tileSize);
+    Grid gameGrid(cols, rows, tileSize);
     gameGrid.spawnTile();
     gameGrid.spawnTile();
 
